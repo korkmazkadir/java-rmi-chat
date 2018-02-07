@@ -38,11 +38,11 @@ public class Server implements ChatService {
     public void registerClient(ChatClient client) throws RemoteException {
         final String clientName = client.getName();
         System.out.println("Registered client : " + clientName);
-        if(!nameClientObjetMap.containsKey(client.getName())){
+        if (!nameClientObjetMap.containsKey(client.getName())) {
             nameClientObjetMap.put(clientName, new LinkedList<>());
         }
         nameClientObjetMap.get(clientName).add(client);
-        
+
         notifyUsers();
     }
 
@@ -55,19 +55,21 @@ public class Server implements ChatService {
 
     @Override
     public void sendMessage(ChatClient from, String to, String message) throws RemoteException {
-        System.out.println("Sending message");
+        System.out.println(from.getName() + " - " + to + " message : " + message);
         List<ChatClient> recievers = nameClientObjetMap.get(to);
         if (recievers != null) {
             Message m = new Message(from.getName(), to, new Date(), message);
             messageList.add(m);
+
+            //Sending same message to sender :)
+            if (from.getName().equals(to) == false && !(from.getName().equals("HelperBot"))) {
+                from.notifyNewMessage(m);
+            }
+
             for (ChatClient reciever : recievers) {
                 reciever.notifyNewMessage(m);
             }
-            
-            //Sending same message to sender :)
-            if (from.getName().equals(to) == false && !(from.getName().equals("HelperBot") || to.equals("HelperBot"))) {
-                from.notifyNewMessage(m);
-            }
+
         }
     }
 
