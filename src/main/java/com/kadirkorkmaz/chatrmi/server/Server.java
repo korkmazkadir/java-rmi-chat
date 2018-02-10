@@ -8,7 +8,7 @@ package com.kadirkorkmaz.chatrmi.server;
 import com.kadirkorkmaz.chatrmi.common.ChatClient;
 import com.kadirkorkmaz.chatrmi.common.ChatService;
 import com.kadirkorkmaz.chatrmi.common.Message;
-import com.kadirkorkmaz.chatrmi.database.DBManager;
+import com.kadirkorkmaz.chatrmi.database.FileRecorder;
 import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Iterator;
@@ -30,8 +30,8 @@ public class Server implements ChatService {
 
     public Server() {
         nameClientObjetMap = new LinkedHashMap<>();
-        messageList = DBManager.GetPersistentMessageList();
-        System.out.println("Message list size : " + messageList.size());
+        messageList = FileRecorder.loadPreviosMessages();
+        System.out.println("Message list size loaded from DB : " + messageList.size());
     }
 
     @Override
@@ -60,7 +60,8 @@ public class Server implements ChatService {
         if (recievers != null) {
             Message m = new Message(from.getName(), to, new Date(), message);
             messageList.add(m);
-
+            FileRecorder.appendNewMessage(m);
+            
             //Sending same message to sender :)
             if (from.getName().equals(to) == false && !(from.getName().equals("HelperBot"))) {
                 from.notifyNewMessage(m);

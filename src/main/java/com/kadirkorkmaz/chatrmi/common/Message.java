@@ -6,6 +6,9 @@
 package com.kadirkorkmaz.chatrmi.common;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -19,6 +22,8 @@ public class Message implements Serializable {
     private Date date;
     private String message;
 
+    private static final String FIELD_DELIMETER_STRING = "#";
+    
     public Message() {
     }
 
@@ -61,8 +66,31 @@ public class Message implements Serializable {
         this.message = message;
     }
 
-    
-    
+    private static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+    public String getFileString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(from).append(FIELD_DELIMETER_STRING)
+                .append(to).append(FIELD_DELIMETER_STRING)
+                .append(dateFormat.format(date)).append(FIELD_DELIMETER_STRING)
+                .append(message).append(FIELD_DELIMETER_STRING).append("\n");
+
+        return sb.toString();
+    }
+
+    public void loadFromString(String str) {
+        String[] tokens = str.split(FIELD_DELIMETER_STRING);
+        
+        from = tokens[0];
+        to = tokens[1];
+        try {
+            date = dateFormat.parse(tokens[2]);
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        message = tokens[3];
+    }
+
     @Override
     public String toString() {
         return "Message{" + "from=" + from + ", to=" + to + ", date=" + date + ", message=" + message + '}';

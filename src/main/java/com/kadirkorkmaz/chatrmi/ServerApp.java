@@ -8,7 +8,6 @@ package com.kadirkorkmaz.chatrmi;
 import com.kadirkorkmaz.chatrmi.client.BotClient;
 import com.kadirkorkmaz.chatrmi.common.ChatClient;
 import com.kadirkorkmaz.chatrmi.common.ChatService;
-import com.kadirkorkmaz.chatrmi.database.DBManager;
 import com.kadirkorkmaz.chatrmi.server.Server;
 import java.io.IOException;
 import java.rmi.registry.LocateRegistry;
@@ -25,8 +24,6 @@ public class ServerApp {
 
         Runtime.getRuntime().exec("rmiregistry 2020");
         LocateRegistry.createRegistry(2020);
-
-        DBManager.OpenDB();
 
         try {
             Server chatServer = new Server();
@@ -49,7 +46,6 @@ public class ServerApp {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 System.out.println("Shutdown Hook is running !");
-                DBManager.CloseDB();
             }
         });
 
