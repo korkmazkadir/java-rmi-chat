@@ -23,7 +23,6 @@ public class ServerApp {
     public static void main(String[] args) throws IOException {
 
         Runtime.getRuntime().exec("rmiregistry 2020");
-        LocateRegistry.createRegistry(2020);
 
         try {
             Server chatServer = new Server();
@@ -37,7 +36,7 @@ public class ServerApp {
             ChatClient bot_stub = (ChatClient) UnicastRemoteObject.exportObject(bot, 0);
             stub.registerClient(bot_stub);
             
-            System.err.println("Server ready");
+            System.out.println("Server ready");
         } catch (Exception e) {
             System.err.println("Server exception: " + e.toString());
             e.printStackTrace();

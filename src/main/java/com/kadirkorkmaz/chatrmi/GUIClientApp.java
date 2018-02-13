@@ -74,20 +74,16 @@ public class GUIClientApp implements ChatClient, CommunicationProvider {
 
             System.out.println("Connecting to server : " + serverAddress);
 
-            Registry registry = LocateRegistry.getRegistry(serverAddress,2020);
-            
-            if(registry == null){
+            Registry registry = LocateRegistry.getRegistry(serverAddress, 2020);
+
+            if (registry == null) {
                 System.out.println("Registry is null :(");
             }
-            
-            
-            chatService = (ChatService) registry.lookup("ChatService");            
+
+            chatService = (ChatService) registry.lookup("ChatService");
             clientStub = (ChatClient) UnicastRemoteObject.exportObject(this, 0);
 
             chatService.registerClient(clientStub);
-
-            chatService.sendMessage(clientStub, clientStub.getName(), "Hello there :)");
-            System.out.println("Message send");
 
             //chatService.unregisterClient(clintStub);
         } catch (Exception e) {
@@ -111,6 +107,25 @@ public class GUIClientApp implements ChatClient, CommunicationProvider {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 clientForm.updateUserList(currentUserNames);
+            }
+        });
+    }
+
+    @Override
+    public void notifyLogin(String username) {
+        System.out.println("---> New user : " + username);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                clientForm.userLogin(username);
+            }
+        });
+    }
+
+    @Override
+    public void notifyLogout(String username) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                clientForm.userLogout(username);
             }
         });
     }

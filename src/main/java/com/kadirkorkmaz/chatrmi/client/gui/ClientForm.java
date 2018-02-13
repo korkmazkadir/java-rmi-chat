@@ -21,7 +21,7 @@ public class ClientForm extends javax.swing.JFrame {
     private final DefaultListModel userListModel;
     private final DefaultListModel messageListModel;
 
-    private CommunicationProvider communicationProvider;
+    private final CommunicationProvider communicationProvider;
 
     private String username;
 
@@ -29,10 +29,11 @@ public class ClientForm extends javax.swing.JFrame {
 
     /**
      * Creates new form GUIClient
+     *
+     * @param communicationProvider
      */
     public ClientForm(CommunicationProvider communicationProvider) {
 
-        this.username = username;
         this.communicationProvider = communicationProvider;
 
         initComponents();
@@ -44,7 +45,6 @@ public class ClientForm extends javax.swing.JFrame {
 
         lstUserList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         lstMessageList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        
 
         txtMessage.setEnabled(false);
 
@@ -53,16 +53,64 @@ public class ClientForm extends javax.swing.JFrame {
     public void updateUserList(String[] users) {
         userListModel.clear();
         for (String user : users) {
-            userListModel.addElement(user);
+            UserListItem item = new UserListItem(username, user);
+            userListModel.addElement(item);
         }
     }
 
+    public void userLogin(String loginUsername) {
+        System.out.println("User login : " + loginUsername);
+        UserListItem item = getUserListItem(loginUsername);
+        if (item == null) {
+            item = new UserListItem(username, loginUsername);
+            userListModel.addElement(item);
+        }
+        item.setIsOnline(true);
+
+    }
+
+    public void userLogout(String logoutUsername) {
+        System.out.println("User logout : " + logoutUsername);
+        UserListItem item = getUserListItem(logoutUsername);
+        if (item == null) {
+            return;
+        }
+        item.setIsOnline(false);
+    }
+
+    private UserListItem getUserListItem(String username) {
+        int size = userListModel.getSize();
+        for (int i = 0; i < size; i++) {
+            UserListItem listItem = (UserListItem) userListModel.get(i);
+            if (listItem.getUsername().equals(username)) {
+                return listItem;
+            }
+        }
+
+        return null;
+    }
+
     public void notifyNewMessage(Message message) {
+
+        if (!message.getFrom().equals(username) && (currentUser == null || !currentUser.equals(message.getFrom())) ) {
+            
+            UserListItem item = getUserListItem(message.getFrom());
+            if (item != null) {
+                item.incrementUnreadMessageCount();
+            } else {
+                System.out.println("!OPPS : We get message before adding user");
+            }
+         
+            lstUserList.repaint();
+            return;
+        }
+
         messageListModel.addElement(message);
         int lastIndex = messageListModel.getSize() - 1;
         if (lastIndex >= 0) {
             lstMessageList.ensureIndexIsVisible(lastIndex);
         }
+
     }
 
     public void setUsername(String name) {
@@ -200,14 +248,18 @@ public class ClientForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void lstUserListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_lstUserListValueChanged
-        currentUser = lstUserList.getSelectedValue();
+        currentUser = ((UserListItem) userListModel.get(lstUserList.getSelectedIndex())).getUsername();
         if (currentUser != null) {
+
             List<Message> messages = communicationProvider.loadMessages(currentUser);
             messageListModel.clear();
             for (Message message : messages) {
                 messageListModel.addElement(message);
             }
             txtMessage.setEnabled(true);
+            UserListItem userListItem = getUserListItem(currentUser);
+            userListItem.resetUnreadMessageCount();
+
         } else {
             txtMessage.setEnabled(false);
         }

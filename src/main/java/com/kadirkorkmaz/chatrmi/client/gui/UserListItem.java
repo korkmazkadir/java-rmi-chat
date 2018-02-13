@@ -11,33 +11,72 @@ package com.kadirkorkmaz.chatrmi.client.gui;
  */
 public class UserListItem {
 
-    private String username;
-    private int unreadMessageNumber = 0;
+    private final String currrentUsername;
+    private final String username;
+    private int unreadMessageCount = 0;
+    private boolean isOnline = true;
 
-    public UserListItem(String username, int unreadMessageNumber, boolean isSpecialUser) {
+    public UserListItem(String currrentUsername, String username) {
+        this.currrentUsername = currrentUsername;
         this.username = username;
-        this.unreadMessageNumber = unreadMessageNumber;
+    }
+
+    public String getCurrrentUsername() {
+        return currrentUsername;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public int getUnreadMessageCount() {
+        return unreadMessageCount;
     }
 
-    public int getUnreadMessageNumber() {
-        return unreadMessageNumber;
+    public void incrementUnreadMessageCount() {
+        unreadMessageCount += 1;
     }
 
-    public void incrementUnreadMessageNumber(){
-        unreadMessageNumber += 1;
+    public void resetUnreadMessageCount() {
+        this.unreadMessageCount = 0;
+    }
+
+    public boolean isIsOnline() {
+        return isOnline;
+    }
+
+    public void setIsOnline(boolean isOnline) {
+        this.isOnline = isOnline;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+
+        if (!obj.getClass().equals(this.getClass())) {
+            return false;
+        }
+
+        return username.equals(((UserListItem) obj).getUsername());
     }
 
     @Override
     public String toString() {
-        return unreadMessageNumber == 0 ?  username : username + " (" + unreadMessageNumber + ")";
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(username).append(" ");
+        if (username.equals(currrentUsername)) {
+            sb.append("(me)").append(" ");
+        }
+        
+        if(unreadMessageCount > 0){
+           sb.append("(").append(unreadMessageCount).append(") ");
+        }
+        
+        if(!isOnline){
+            sb.append("(offline) ");
+        }
+
+        return sb.toString();
     }
 
 }

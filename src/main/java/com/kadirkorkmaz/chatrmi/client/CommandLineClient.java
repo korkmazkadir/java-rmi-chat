@@ -39,4 +39,14 @@ public class CommandLineClient implements ChatClient {
         return this.name;
     }
 
+    @Override
+    public void notifyLogin(String username) {
+        System.out.println("User login : " + username);
+    }
+
+    @Override
+    public void notifyLogout(String username) {
+        System.out.println("User logout : " + username);
+    }
+
 }

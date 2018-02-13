@@ -17,9 +17,9 @@ import java.rmi.RemoteException;
 public class BotClient implements ChatClient {
 
     private String username = "HelperBot";
-    
-    private Server  server;
-    
+
+    private Server server;
+
     public BotClient(Server server) {
         this.server = server;
     }
@@ -31,7 +31,17 @@ public class BotClient implements ChatClient {
 
     @Override
     public void notifyUserListUpdate(String[] currentUserNames) throws RemoteException {
-        
+
+    }
+
+    @Override
+    public void notifyLogin(String username) {
+
+    }
+
+    @Override
+    public void notifyLogout(String username) {
+
     }
 
     @Override

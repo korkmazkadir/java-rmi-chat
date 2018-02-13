@@ -36,21 +36,24 @@ public class Server implements ChatService {
 
     @Override
     public void registerClient(ChatClient client) throws RemoteException {
+
         final String clientName = client.getName();
         System.out.println("Registered client : " + clientName);
+        notifyLogin(clientName);
+
         if (!nameClientObjetMap.containsKey(client.getName())) {
             nameClientObjetMap.put(clientName, new LinkedList<>());
         }
         nameClientObjetMap.get(clientName).add(client);
-
-        notifyUsers();
+        notifyUser(client);
     }
 
     @Override
     public void unregisterClient(ChatClient client) throws RemoteException {
         System.out.println("Unregistered client : " + client.getName());
-        nameClientObjetMap.remove(client.getName());
-        notifyUsers();
+        final String clientName = client.getName();
+        nameClientObjetMap.remove(clientName);
+        notifyLogout(clientName);
     }
 
     @Override
@@ -61,7 +64,7 @@ public class Server implements ChatService {
             Message m = new Message(from.getName(), to, new Date(), message);
             messageList.add(m);
             FileRecorder.appendNewMessage(m);
-            
+
             //Sending same message to sender :)
             if (from.getName().equals(to) == false && !(from.getName().equals("HelperBot"))) {
                 from.notifyNewMessage(m);
@@ -80,15 +83,51 @@ public class Server implements ChatService {
         return getMessagesBetween(clientName, otherClientName);
     }
 
-    private void notifyUsers() throws RemoteException {
+    private void notifyUser(ChatClient client) throws RemoteException {
         Set<String> userNameSet = nameClientObjetMap.keySet();
         String[] availableUserNames = userNameSet.toArray(new String[userNameSet.size()]);
+        client.notifyUserListUpdate(availableUserNames);
+    }
+
+    private void notifyLogin(String loginUsername) throws RemoteException {
+
+        
+        
+        if (nameClientObjetMap.containsKey(loginUsername)) {
+            System.out.println("User is already here, no need to notify");
+            //no need to de something
+            return;
+        }
+        
+        System.out.println("login notify : " + loginUsername);
+
         Iterator<Map.Entry<String, List<ChatClient>>> clientIterator = nameClientObjetMap.entrySet().iterator();
         while (clientIterator.hasNext()) {
             Map.Entry<String, List<ChatClient>> pair = clientIterator.next();
             List<ChatClient> recievers = pair.getValue();
             for (ChatClient reciever : recievers) {
-                reciever.notifyUserListUpdate(availableUserNames);
+                reciever.notifyLogin(loginUsername);
+            }
+        }
+    }
+
+    private void notifyLogout(String logoutUsername) throws RemoteException {
+
+        
+        
+        if (nameClientObjetMap.containsKey(logoutUsername)) {
+            System.out.println("User is already here, no need to notify");
+            return;
+        }
+
+        System.out.println("logout notify : " + logoutUsername);
+        
+        Iterator<Map.Entry<String, List<ChatClient>>> clientIterator = nameClientObjetMap.entrySet().iterator();
+        while (clientIterator.hasNext()) {
+            Map.Entry<String, List<ChatClient>> pair = clientIterator.next();
+            List<ChatClient> recievers = pair.getValue();
+            for (ChatClient reciever : recievers) {
+                reciever.notifyLogout(logoutUsername);
             }
         }
     }

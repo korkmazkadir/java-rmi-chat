@@ -22,7 +22,11 @@ import javax.swing.border.MatteBorder;
 public class UserCellRenderer implements ListCellRenderer{
 
     protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
+    
     private final Color selectedColor = new Color(211, 238, 244);
+    private final Color unreadMessageColor = new Color(102, 170, 50);
+    private final Color offlineUserColor = new Color(100, 121, 168);
+    
     private final MatteBorder selectedBorder = BorderFactory.createMatteBorder(0, 0, 0, 0, Color.GRAY);
     
     private final int fontSize = 16;
@@ -34,12 +38,17 @@ public class UserCellRenderer implements ListCellRenderer{
 
     @Override
     public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        String usrname = (String) value;
-        JLabel label = (JLabel) defaultRenderer.getListCellRendererComponent(list, usrname, index, false, cellHasFocus);
+        UserListItem userListItem = (UserListItem) value;
+                
+        JLabel label = (JLabel) defaultRenderer.getListCellRendererComponent(list, userListItem.toString(), index, false, cellHasFocus);
         label.setFont(new Font(Font.SERIF, Font.PLAIN, fontSize));
         
-        if (username.equals(usrname)){
-            label.setText(usrname + " (me)");
+        if(userListItem.getUnreadMessageCount() > 0){
+            label.setBackground(unreadMessageColor);
+        }
+        
+        if(userListItem.isIsOnline() == false){
+            label.setBackground(offlineUserColor);
         }
         
         if(isSelected){

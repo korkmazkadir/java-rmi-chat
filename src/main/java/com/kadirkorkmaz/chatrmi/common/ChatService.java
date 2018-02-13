@@ -13,11 +13,14 @@ import java.util.List;
  *
  * @author kadir
  */
-public interface ChatService extends Remote{
-    
+public interface ChatService extends Remote {
+
     public void registerClient(ChatClient client) throws RemoteException;
+
     public void unregisterClient(ChatClient client) throws RemoteException;
+
     public void sendMessage(ChatClient from, String to, String message) throws RemoteException;
+
     public List<Message> getMessageHistory(ChatClient client, String otherClientName) throws RemoteException;
-    
+
 }
