@@ -16,8 +16,6 @@ public interface ChatClient extends Remote {
 
     public void notifyNewMessage(Message message) throws RemoteException;
 
-    public void notifyUserListUpdate(String[] currentUserNames) throws RemoteException;
-
     public void notifyLogin(String username) throws RemoteException;
 
     public void notifyLogout(String username) throws RemoteException;

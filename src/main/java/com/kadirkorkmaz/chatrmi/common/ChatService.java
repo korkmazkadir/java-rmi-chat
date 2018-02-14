@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface ChatService extends Remote {
 
-    public void registerClient(ChatClient client) throws RemoteException;
+    public String[] registerClient(ChatClient client) throws RemoteException;
 
     public void unregisterClient(ChatClient client) throws RemoteException;
 

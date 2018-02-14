@@ -30,11 +30,6 @@ public class BotClient implements ChatClient {
     }
 
     @Override
-    public void notifyUserListUpdate(String[] currentUserNames) throws RemoteException {
-
-    }
-
-    @Override
     public void notifyLogin(String username) {
 
     }

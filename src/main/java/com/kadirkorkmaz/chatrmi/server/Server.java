@@ -35,7 +35,7 @@ public class Server implements ChatService {
     }
 
     @Override
-    public void registerClient(ChatClient client) throws RemoteException {
+    public String[] registerClient(ChatClient client) throws RemoteException {
 
         final String clientName = client.getName();
         System.out.println("Registered client : " + clientName);
@@ -45,7 +45,9 @@ public class Server implements ChatService {
             nameClientObjetMap.put(clientName, new LinkedList<>());
         }
         nameClientObjetMap.get(clientName).add(client);
-        notifyUser(client);
+        
+        Set<String> currentUsers = nameClientObjetMap.keySet();
+        return currentUsers.toArray(new String[currentUsers.size()]);
     }
 
     @Override
@@ -83,12 +85,7 @@ public class Server implements ChatService {
         return getMessagesBetween(clientName, otherClientName);
     }
 
-    private void notifyUser(ChatClient client) throws RemoteException {
-        Set<String> userNameSet = nameClientObjetMap.keySet();
-        String[] availableUserNames = userNameSet.toArray(new String[userNameSet.size()]);
-        client.notifyUserListUpdate(availableUserNames);
-    }
-
+    
     private void notifyLogin(String loginUsername) throws RemoteException {
 
         

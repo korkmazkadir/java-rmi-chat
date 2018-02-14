@@ -83,7 +83,12 @@ public class GUIClientApp implements ChatClient, CommunicationProvider {
             chatService = (ChatService) registry.lookup("ChatService");
             clientStub = (ChatClient) UnicastRemoteObject.exportObject(this, 0);
 
-            chatService.registerClient(clientStub);
+            String[] currentUsers = chatService.registerClient(clientStub);
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    clientForm.updateUserList(currentUsers);
+                }
+            });
 
             //chatService.unregisterClient(clintStub);
         } catch (Exception e) {
@@ -98,15 +103,6 @@ public class GUIClientApp implements ChatClient, CommunicationProvider {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 clientForm.notifyNewMessage(message);
-            }
-        });
-    }
-
-    @Override
-    public void notifyUserListUpdate(String[] currentUserNames) throws RemoteException {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                clientForm.updateUserList(currentUserNames);
             }
         });
     }

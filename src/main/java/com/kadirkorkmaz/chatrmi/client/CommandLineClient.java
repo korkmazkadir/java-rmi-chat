@@ -26,15 +26,6 @@ public class CommandLineClient implements ChatClient {
     }
 
     @Override
-    public void notifyUserListUpdate(String[] currentUserNames) {
-        System.out.println("---------- User List Updated ----------");
-        for (String currentUserName : currentUserNames) {
-            System.out.println(currentUserName);
-        }
-        System.out.println("---------------------------------------");
-    }
-
-    @Override
     public String getName() {
         return this.name;
     }
