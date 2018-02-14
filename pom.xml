@@ -32,7 +32,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.kadirkorkmaz.chatrmi.ServerApp</mainClass>
+                                    <mainClass>chatrmi.ServerApp</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
@@ -52,7 +52,7 @@
                         <configuration>
                             <archive>
                                 <manifest>
-                                    <mainClass>com.kadirkorkmaz.chatrmi.GUIClientApp.jar</mainClass>
+                                    <mainClass>chatrmi.GUIClientApp</mainClass>
                                 </manifest>
                             </archive>
                             <descriptorRefs>
