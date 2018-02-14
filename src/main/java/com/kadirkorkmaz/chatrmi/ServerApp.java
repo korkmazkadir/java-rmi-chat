@@ -23,6 +23,7 @@ public class ServerApp {
     public static void main(String[] args) throws IOException {
 
         Runtime.getRuntime().exec("rmiregistry 2020");
+        LocateRegistry.createRegistry(2020);
 
         try {
             Server chatServer = new Server();
