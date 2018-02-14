@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.kadirkorkmaz.chatrmi.database;
+package chatrmi.database;
 
-import com.kadirkorkmaz.chatrmi.common.Message;
+import chatrmi.common.Message;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;

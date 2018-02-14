@@ -3,10 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.kadirkorkmaz.chatrmi.client;
+package chatrmi.client;
 
-import com.kadirkorkmaz.chatrmi.common.ChatClient;
-import com.kadirkorkmaz.chatrmi.common.Message;
+import chatrmi.common.ChatClient;
+import chatrmi.common.Message;
 
 /**
  *

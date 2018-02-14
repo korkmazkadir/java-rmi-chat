@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.kadirkorkmaz.chatrmi;
+package chatrmi;
 
-import com.kadirkorkmaz.chatrmi.client.gui.ClientForm;
-import com.kadirkorkmaz.chatrmi.client.gui.CommunicationProvider;
-import com.kadirkorkmaz.chatrmi.client.gui.LoginDialog;
-import com.kadirkorkmaz.chatrmi.common.ChatClient;
-import com.kadirkorkmaz.chatrmi.common.ChatService;
-import com.kadirkorkmaz.chatrmi.common.Message;
+import chatrmi.client.gui.ClientForm;
+import chatrmi.client.gui.CommunicationProvider;
+import chatrmi.client.gui.LoginDialog;
+import chatrmi.common.ChatClient;
+import chatrmi.common.ChatService;
+import chatrmi.common.Message;
 import java.awt.event.WindowEvent;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;

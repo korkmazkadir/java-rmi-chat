@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.kadirkorkmaz.chatrmi.server;
+package chatrmi.server;
 
-import com.kadirkorkmaz.chatrmi.common.ChatClient;
-import com.kadirkorkmaz.chatrmi.common.ChatService;
-import com.kadirkorkmaz.chatrmi.common.Message;
-import com.kadirkorkmaz.chatrmi.database.FileRecorder;
+import chatrmi.common.ChatClient;
+import chatrmi.common.ChatService;
+import chatrmi.common.Message;
+import chatrmi.database.FileRecorder;
 import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Iterator;

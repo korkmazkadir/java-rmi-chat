@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.kadirkorkmaz.chatrmi.client.gui;
+package chatrmi.client.gui;
 
-import com.kadirkorkmaz.chatrmi.common.Message;
+import chatrmi.common.Message;
 import java.awt.event.KeyEvent;
 import java.util.List;
 import javax.swing.DefaultListModel;
