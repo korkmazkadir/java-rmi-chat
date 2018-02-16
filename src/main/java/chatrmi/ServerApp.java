@@ -5,8 +5,6 @@
  */
 package chatrmi;
 
-import chatrmi.client.BotClient;
-import chatrmi.common.ChatClient;
 import chatrmi.common.ChatService;
 import chatrmi.server.Server;
 import java.io.IOException;
@@ -33,9 +31,9 @@ public class ServerApp {
             Registry registry = LocateRegistry.getRegistry(2020);
             registry.bind("ChatService", stub);
 
-            BotClient bot = new BotClient(chatServer);
-            ChatClient bot_stub = (ChatClient) UnicastRemoteObject.exportObject(bot, 0);
-            stub.registerClient(bot_stub);
+            //BotClient bot = new BotClient(chatServer);
+            //ChatClient bot_stub = (ChatClient) UnicastRemoteObject.exportObject(bot, 0);
+            //stub.registerClient(bot_stub);
             
             System.out.println("Server ready");
         } catch (Exception e) {

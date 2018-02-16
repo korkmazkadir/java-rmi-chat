@@ -25,6 +25,8 @@ public class ClientForm extends javax.swing.JFrame {
 
     private String username;
 
+    private final static String BROATCAST_USER = "Broadcast";
+
     private boolean sentWithEnter = true;
 
     /**
@@ -48,10 +50,11 @@ public class ClientForm extends javax.swing.JFrame {
 
         txtMessage.setEnabled(false);
 
+        //Adding broadcast user to userlist
+        userListModel.addElement(new UserListItem(username, BROATCAST_USER));
     }
 
     public void updateUserList(String[] users) {
-        userListModel.clear();
         for (String user : users) {
             UserListItem item = new UserListItem(username, user);
             userListModel.addElement(item);
@@ -92,24 +95,33 @@ public class ClientForm extends javax.swing.JFrame {
 
     public void notifyNewMessage(Message message) {
 
-        if (!message.getFrom().equals(username) && (currentUser == null || !currentUser.equals(message.getFrom())) ) {
-            
-            UserListItem item = getUserListItem(message.getFrom());
-            if (item != null) {
-                item.incrementUnreadMessageCount();
-            } else {
-                System.out.println("!OPPS : We get message before adding user");
-            }
-         
-            lstUserList.repaint();
+        if (currentUser != null && ( (currentUser.equals(message.getFrom()) && !message.isBroadcastMessage() )  ||  ( message.isBroadcastMessage() && currentUser.equals(BROATCAST_USER))  )) {
+            messageListModel.addElement(message);
+            messageListShowLastIndex();
             return;
         }
 
-        messageListModel.addElement(message);
-        int lastIndex = messageListModel.getSize() - 1;
-        if (lastIndex >= 0) {
-            lstMessageList.ensureIndexIsVisible(lastIndex);
+        if (currentUser != null && message.getFrom().equals(username) && !message.isBroadcastMessage()) {
+            messageListModel.addElement(message);
+            messageListShowLastIndex();
+            return;
         }
+
+        
+        UserListItem item;
+        if (message.isBroadcastMessage()) {
+            item = getUserListItem(BROATCAST_USER);
+        } else {
+            item = getUserListItem(message.getFrom());
+        }
+
+        if (item != null) {
+            item.incrementUnreadMessageCount();
+        } else {
+            System.out.println("!OPPS : We get message before adding user");
+        }
+
+        lstUserList.repaint();
 
     }
 
@@ -118,6 +130,13 @@ public class ClientForm extends javax.swing.JFrame {
         lstMessageList.setCellRenderer(new MessageCellRenderer(username));
         lstUserList.setCellRenderer(new UserCellRenderer(username));
         this.setTitle(name);
+    }
+
+    private void messageListShowLastIndex() {
+        int lastIndex = messageListModel.getSize() - 1;
+        if (lastIndex >= 0) {
+            lstMessageList.ensureIndexIsVisible(lastIndex);
+        }
     }
 
     /**
@@ -252,6 +271,7 @@ public class ClientForm extends javax.swing.JFrame {
         if (currentUser != null) {
 
             List<Message> messages = communicationProvider.loadMessages(currentUser);
+
             messageListModel.clear();
             for (Message message : messages) {
                 messageListModel.addElement(message);
@@ -260,6 +280,7 @@ public class ClientForm extends javax.swing.JFrame {
             UserListItem userListItem = getUserListItem(currentUser);
             userListItem.resetUnreadMessageCount();
 
+            messageListShowLastIndex();
         } else {
             txtMessage.setEnabled(false);
         }
@@ -268,7 +289,11 @@ public class ClientForm extends javax.swing.JFrame {
     private void sendMessage() {
         String message = txtMessage.getText();
         if (message != null && message.isEmpty() == false) {
-            communicationProvider.sendMessage(currentUser, message);
+            if (currentUser.equals(BROATCAST_USER)) {
+                communicationProvider.broadcastMessage(message);
+            } else {
+                communicationProvider.sendMessage(currentUser, message);
+            }
             txtMessage.setText("");
         }
     }

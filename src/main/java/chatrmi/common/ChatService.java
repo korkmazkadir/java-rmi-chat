@@ -22,5 +22,9 @@ public interface ChatService extends Remote {
     public void sendMessage(ChatClient from, String to, String message) throws RemoteException;
 
     public List<Message> getMessageHistory(ChatClient client, String otherClientName) throws RemoteException;
+    
+    public void broadcastMessage(ChatClient from, String message) throws RemoteException;
+    
+    public String[] getContactList() throws RemoteException;
 
 }

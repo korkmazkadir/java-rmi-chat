@@ -16,5 +16,6 @@ public interface CommunicationProvider {
      
     public void sendMessage(String receiverName, String message);
     public List<Message> loadMessages(String userName);
+    public void broadcastMessage(String message);
     
 }

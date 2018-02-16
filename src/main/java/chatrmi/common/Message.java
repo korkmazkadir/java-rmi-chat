@@ -21,17 +21,19 @@ public class Message implements Serializable {
     private String to;
     private Date date;
     private String message;
+    private boolean isBroadcastMessage;
 
     private static final String FIELD_DELIMETER_STRING = "#";
-    
+
     public Message() {
     }
 
-    public Message(String from, String to, Date date, String message) {
+    public Message(String from, String to, Date date, String message, boolean isBroadcastMessage) {
         this.from = from;
         this.to = to;
         this.date = date;
         this.message = message;
+        this.isBroadcastMessage = isBroadcastMessage;
     }
 
     public String getFrom() {
@@ -66,6 +68,15 @@ public class Message implements Serializable {
         this.message = message;
     }
 
+    public boolean isBroadcastMessage() {
+        return isBroadcastMessage;
+    }
+
+    public void setIsBroadcastMessage(boolean isBroadcastMessage) {
+        this.isBroadcastMessage = isBroadcastMessage;
+    }
+
+
     private static DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
     public String getFileString() {
@@ -73,14 +84,14 @@ public class Message implements Serializable {
         sb.append(from).append(FIELD_DELIMETER_STRING)
                 .append(to).append(FIELD_DELIMETER_STRING)
                 .append(dateFormat.format(date)).append(FIELD_DELIMETER_STRING)
-                .append(message).append(FIELD_DELIMETER_STRING).append("\n");
+                .append(message).append(FIELD_DELIMETER_STRING).append(isBroadcastMessage).append("\n");
 
         return sb.toString();
     }
 
     public void loadFromString(String str) {
         String[] tokens = str.split(FIELD_DELIMETER_STRING);
-        
+
         from = tokens[0];
         to = tokens[1];
         try {
@@ -89,6 +100,7 @@ public class Message implements Serializable {
             ex.printStackTrace();
         }
         message = tokens[3];
+        isBroadcastMessage = Boolean.parseBoolean(tokens[3]);
     }
 
     @Override

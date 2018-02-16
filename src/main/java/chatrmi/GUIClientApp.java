@@ -150,6 +150,15 @@ public class GUIClientApp implements ChatClient, CommunicationProvider {
         return null;
     }
 
+    @Override
+    public void broadcastMessage(String message) {
+        try {
+            chatService.broadcastMessage(clientStub, message);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         GUIClientApp client = new GUIClientApp();
         client.run();

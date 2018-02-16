@@ -28,6 +28,8 @@ public class Server implements ChatService {
     private final Map<String, List<ChatClient>> nameClientObjetMap;
     private final List<Message> messageList;
 
+    private final static String BROATCAST_CLIENT = "Broadcast";
+
     public Server() {
         nameClientObjetMap = new LinkedHashMap<>();
         messageList = FileRecorder.loadPreviosMessages();
@@ -45,7 +47,7 @@ public class Server implements ChatService {
             nameClientObjetMap.put(clientName, new LinkedList<>());
         }
         nameClientObjetMap.get(clientName).add(client);
-        
+
         Set<String> currentUsers = nameClientObjetMap.keySet();
         return currentUsers.toArray(new String[currentUsers.size()]);
     }
@@ -63,7 +65,7 @@ public class Server implements ChatService {
         System.out.println(from.getName() + " - " + to + " message : " + message);
         List<ChatClient> recievers = nameClientObjetMap.get(to);
         if (recievers != null) {
-            Message m = new Message(from.getName(), to, new Date(), message);
+            Message m = new Message(from.getName(), to, new Date(), message, false);
             messageList.add(m);
             FileRecorder.appendNewMessage(m);
 
@@ -85,17 +87,14 @@ public class Server implements ChatService {
         return getMessagesBetween(clientName, otherClientName);
     }
 
-    
     private void notifyLogin(String loginUsername) throws RemoteException {
 
-        
-        
         if (nameClientObjetMap.containsKey(loginUsername)) {
             System.out.println("User is already here, no need to notify");
             //no need to de something
             return;
         }
-        
+
         System.out.println("login notify : " + loginUsername);
 
         Iterator<Map.Entry<String, List<ChatClient>>> clientIterator = nameClientObjetMap.entrySet().iterator();
@@ -110,15 +109,13 @@ public class Server implements ChatService {
 
     private void notifyLogout(String logoutUsername) throws RemoteException {
 
-        
-        
         if (nameClientObjetMap.containsKey(logoutUsername)) {
             System.out.println("User is already here, no need to notify");
             return;
         }
 
         System.out.println("logout notify : " + logoutUsername);
-        
+
         Iterator<Map.Entry<String, List<ChatClient>>> clientIterator = nameClientObjetMap.entrySet().iterator();
         while (clientIterator.hasNext()) {
             Map.Entry<String, List<ChatClient>> pair = clientIterator.next();
@@ -129,10 +126,47 @@ public class Server implements ChatService {
         }
     }
 
+    @Override
+    public void broadcastMessage(ChatClient from, String message) throws RemoteException {
+        System.out.println(from.getName() + " - BROATCAST - message : " + message);
+
+        //To save file and insert into list
+        Message m = new Message(from.getName(), BROATCAST_CLIENT, new Date(), message, true);
+        FileRecorder.appendNewMessage(m);
+        messageList.add(m);
+
+        Iterator<Map.Entry<String, List<ChatClient>>> clientIterator = nameClientObjetMap.entrySet().iterator();
+        while (clientIterator.hasNext()) {
+            Map.Entry<String, List<ChatClient>> pair = clientIterator.next();
+            List<ChatClient> recievers = pair.getValue();
+            for (ChatClient reciever : recievers) {
+                m = new Message(from.getName(), reciever.getName(), new Date(), message, true);
+                reciever.notifyNewMessage(m);
+            }
+        }
+
+    }
+
+    @Override
+    public String[] getContactList() throws RemoteException {
+
+        return null;
+    }
+
     private List<Message> getMessagesBetween(String user1, String user2) {
-        List<Message> messages = messageList.stream()
-                .filter(m -> (m.getFrom().equals(user1) && m.getTo().equals(user2))
-                || (m.getFrom().equals(user2) && m.getTo().equals(user1))).collect(Collectors.toList());
+        List<Message> messages;
+
+        if (user1.equals(BROATCAST_CLIENT) || user2.equals(BROATCAST_CLIENT)) {
+
+            messages = messageList.stream()
+                    .filter(m -> m.isBroadcastMessage()).collect(Collectors.toList());
+            System.out.println("Sending broadcast messages size : " + messages.size());
+        } else {
+            messages = messageList.stream()
+                    .filter(m -> (m.getFrom().equals(user1) && m.getTo().equals(user2))
+                    || (m.getFrom().equals(user2) && m.getTo().equals(user1))).collect(Collectors.toList());
+        }
+
         return messages;
     }
 
