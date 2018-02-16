@@ -13,6 +13,7 @@ import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -145,12 +146,6 @@ public class Server implements ChatService {
             }
         }
 
-    }
-
-    @Override
-    public String[] getContactList() throws RemoteException {
-
-        return null;
     }
 
     private List<Message> getMessagesBetween(String user1, String user2) {

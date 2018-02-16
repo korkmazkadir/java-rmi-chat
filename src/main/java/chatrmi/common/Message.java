@@ -100,7 +100,7 @@ public class Message implements Serializable {
             ex.printStackTrace();
         }
         message = tokens[3];
-        isBroadcastMessage = Boolean.parseBoolean(tokens[3]);
+        isBroadcastMessage = Boolean.parseBoolean(tokens[4]);
     }
 
     @Override

@@ -25,6 +25,4 @@ public interface ChatService extends Remote {
     
     public void broadcastMessage(ChatClient from, String message) throws RemoteException;
     
-    public String[] getContactList() throws RemoteException;
-
 }

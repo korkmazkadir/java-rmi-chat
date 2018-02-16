@@ -107,6 +107,11 @@ public class ClientForm extends javax.swing.JFrame {
             return;
         }
 
+        if (currentUser != null && message.getFrom().equals(username) && message.isBroadcastMessage()) {
+            messageListModel.addElement(message);
+            messageListShowLastIndex();
+            return;
+        }
         
         UserListItem item;
         if (message.isBroadcastMessage()) {
