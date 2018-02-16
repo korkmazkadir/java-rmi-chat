@@ -22,15 +22,15 @@ public class ServerApp {
 
     public static void main(String[] args) throws IOException {
 
-        Runtime.getRuntime().exec("rmiregistry 2020");
-        LocateRegistry.createRegistry(2020);
+        Runtime.getRuntime().exec("rmiregistry 2021");
+        LocateRegistry.createRegistry(2021);
 
         try {
             Server chatServer = new Server();
             ChatService stub = (ChatService) UnicastRemoteObject.exportObject(chatServer, 0);
 
             // Bind the remote object's stub in the registry
-            Registry registry = LocateRegistry.getRegistry(2020);
+            Registry registry = LocateRegistry.getRegistry(2021);
             registry.bind("ChatService", stub);
 
             BotClient bot = new BotClient(chatServer);

@@ -74,7 +74,7 @@ public class GUIClientApp implements ChatClient, CommunicationProvider {
 
             System.out.println("Connecting to server : " + serverAddress);
 
-            Registry registry = LocateRegistry.getRegistry(serverAddress, 2020);
+            Registry registry = LocateRegistry.getRegistry(serverAddress, 2021);
 
             if (registry == null) {
                 System.out.println("Registry is null :(");
@@ -87,6 +87,7 @@ public class GUIClientApp implements ChatClient, CommunicationProvider {
             java.awt.EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     clientForm.updateUserList(currentUsers);
+                    
                 }
             });
 
@@ -140,6 +141,16 @@ public class GUIClientApp implements ChatClient, CommunicationProvider {
         }
     }
 
+    
+        @Override
+    public void sendMessageBroadcast(List<String> receiverName, String message) {
+        try {
+            chatService.sendMessageBroadcast(clientStub, receiverName, message);
+        } catch (RemoteException ex) {
+            ex.printStackTrace();
+        }
+    }
+    
     @Override
     public List<Message> loadMessages(String userName) {
         try {

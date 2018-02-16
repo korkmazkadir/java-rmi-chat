@@ -10,6 +10,7 @@ import chatrmi.common.ChatService;
 import chatrmi.common.Message;
 import chatrmi.database.FileRecorder;
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -79,6 +80,33 @@ public class Server implements ChatService {
         }
     }
 
+    
+       @Override
+    public void sendMessageBroadcast(ChatClient from, List<String> to, String message) throws RemoteException {
+        System.out.println(from.getName() + " - " + to + " message : " + message);
+        List<ChatClient> recievers = new ArrayList<ChatClient>();
+        for (int i =0; i < to.size(); i++)
+        {
+            recievers.add((ChatClient)nameClientObjetMap.get(to.get(i)));
+        }
+
+        int size = recievers.size();
+           if (recievers != null) {
+               for (int i=0; i < size; i++) {
+                   Message m = new Message(from.getName(), to.get(i), new Date(), message);
+                   messageList.add(m);
+                   FileRecorder.appendNewMessage(m);
+
+                   for (ChatClient reciever : recievers) {
+                       reciever.notifyNewMessage(m);
+                   }
+                   
+               }
+
+        }
+    }
+
+    
     @Override
     public List<Message> getMessageHistory(ChatClient client, String otherClientName) throws RemoteException {
         String clientName = client.getName();

@@ -15,6 +15,7 @@ import java.util.List;
 public interface CommunicationProvider {
      
     public void sendMessage(String receiverName, String message);
+    public void sendMessageBroadcast(List<String> receiverName, String message);
     public List<Message> loadMessages(String userName);
     
 }
